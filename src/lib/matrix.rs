@@ -1,6 +1,7 @@
 
 use rand:: {thread_rng, Rng};
 
+#[derive(Clone)]
 pub struct Matrix {
 	pub rows: usize,
 	pub cols: usize,
@@ -23,7 +24,7 @@ impl Matrix {
 
 		for i in 0..rows {
 			for j in 0..cols {
-				res.data[i][j] = rng.gen::<f64> * 2.0 - 1.0;
+				res.data[i][j] = rng.gen::<f64>() * 2.0 - 1.0;
 			}
 		}
 		res
@@ -48,7 +49,7 @@ impl Matrix {
 		res
 	}
 
-	pub fn add(&mut self, other &Matrix) -> Matrix {
+	pub fn add(&mut self, other: &Matrix) -> Matrix {
 		if self.rows != other.rows || self.cols !=other.cols {
 			panic!("Attempted to add matrix of incorrect dimension");
 		}
@@ -62,7 +63,7 @@ impl Matrix {
 		res
 	}
 
-	pub fn dot_multuply(&mut self, other &Matrix) -> Matrix {
+	pub fn dot_multuply(&mut self, other: &Matrix) -> Matrix {
 		if self.rows != other.rows || self.cols !=other.cols {
 			panic!("Attempted to dot multiply by matrix of incorrect dimension");
 		}
@@ -76,7 +77,7 @@ impl Matrix {
 		res
 	}
 
-	pub fn subtract (&mut self, other &Matrix) -> Matrix {
+	pub fn subtract (&mut self, other: &Matrix) -> Matrix {
 		if self.rows != other.rows || self.cols !=other.cols {
 			panic!("Attempted to subtract matrix of incorrect dimension");
 		}
@@ -98,11 +99,11 @@ impl Matrix {
 		}
 	}
 
-	pub fn map(&mut self, function: &dyn Fn(64) -> f64) -> Matrix {
+	pub fn map(&mut self, function: &dyn Fn(f64) -> f64) -> Matrix {
 		Matrix::from(
 			(self.data)
 			.clone()
-			into_iter()
+			.into_iter()
 			.map(|row| row.into_iter().map(|value| function(value)).collect())
 			.collect(),
 			)
