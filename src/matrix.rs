@@ -109,7 +109,7 @@ impl Matrix {
 			)
 	}
 
-	pub fn transpose(&mut self) -> Matrix {
+	pub fn transpose(& self) -> Matrix {
 		let mut res = Matrix::zeros(self.rows, self.cols);
 
 		for i in 0..self.rows {

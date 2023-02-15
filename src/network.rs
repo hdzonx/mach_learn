@@ -1,6 +1,6 @@
-use std::vec;
-use super::matrix::Matrix;
 use super::activation::Activation;
+use super::matrix::Matrix;
+use std::vec;
 pub struct Network<'a> {
     layers: Vec<usize>,
     weights: Vec<Matrix>,
@@ -11,11 +11,14 @@ pub struct Network<'a> {
 }
 
 impl Network<'_> {
-    pub fn new<'a>(layers: Vec<usize>, learning_rate: f64, activation: Activation<'a>) ->Network {
+    pub fn new<'a>(
+        layers: Vec<usize>,
+        learning_rate: f64,
+        activation: Activation<'a>,
+    ) -> Network<'a> {
         let mut weights = vec![];
         let mut biases = vec![];
-
-        for i in  layers.len() - 1 {
+        for i in 0..layers.len() - 1 {
             weights.push(Matrix::random(layers[i + 1], layers[1]));
             biases.push(Matrix::random(layers[i + 1], 1));
         }
@@ -45,15 +48,15 @@ impl Network<'_> {
 
             self.data.push(current.clone());
         }
-        current.data[0].to_owned()
+        current.transpose().data[0].to_owned()
     }
 
     pub fn back_propagation(&mut self, outputs: Vec<f64>, targets: Vec<f64>) {
         if targets.len() != self.layers[self.layers.len() - 1] {
             panic!("Invalid numbers of targets");
         }
-        let mut parsed = Matrix::from(vec![outputs]);
-        let mut errors = Matrix::from(vec![targets]).subtract(&parsed);
+        let mut parsed = Matrix::from(vec![outputs]).transpose();
+        let mut errors = Matrix::from(vec![targets]).transpose().subtract(&parsed);
         let mut gradients = parsed.map(self.activation.derivative);
 
         for i in (0..self.layers.len() - 1).rev() {
@@ -69,14 +72,14 @@ impl Network<'_> {
         }
     }
     pub fn train(&mut self, inputs: Vec<Vec<f64>>, targets: Vec<Vec<f64>>, epochs: u16) {
-		for i in 1..epochs {
-			if epochs < 100 || i % (epochs/100) == 0 {
-				println!("Epoch {} of {}", i, epochs);
-			}
-			for j in 0..inputs.len() {
-				let outputs = self.feed_forward(inputs[j].clone());
-				self.back_propagation(outputs, targets[j].clone());
-			}
-		}
-	}
+        for i in 1..epochs {
+            if epochs < 100 || i % (epochs / 100) == 0 {
+                println!("Epoch {} of {}", i, epochs);
+            }
+            for j in 0..inputs.len() {
+                let outputs = self.feed_forward(inputs[j].clone());
+                self.back_propagation(outputs, targets[j].clone());
+            }
+        }
+    }
 }

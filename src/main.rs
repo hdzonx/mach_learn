@@ -1,8 +1,10 @@
-use std::vec;
+//use std::vec;
+use activation::SIGMOID;
+use network::Network;
 
-use lib::{activations::SIGMOID, networks::Network};
-
-pub mod lib;
+pub mod activation;
+pub mod network;
+pub mod matrix;
 
 fn main() {
     let inputs = vec![
@@ -14,11 +16,11 @@ fn main() {
 
     let targets = vec![vec![0.0], vec![1.0], vec![1.0], vec![0.0]];
 
-    let mut network = Network::new([2, 3, 1], 0.5, SIGMOID);
+    let mut network = Network::new(vec![2, 3, 1], 0.5, SIGMOID);
 
     println!("Before the train");
 
-    network.train(inputs, targets, 10000);
+    network.train(inputs, targets, 1000);
 
     println!("After the train");
     println!("0 and 0: {:?}", network.feed_forward(vec![0.0, 0.0]));
